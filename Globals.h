@@ -1,18 +1,27 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
+#define DEBUG
+
 #include <stdlib.h>
 
-typedef int stk_el_t;
+typedef double stk_el_t;
 
-const size_t CAPACITY_MIN = 1;
+const size_t   CAPACITY_MIN = 10;
+const stk_el_t POISON       = -79173490302.102;
 
 struct Stk_t
 {
-    stk_el_t* data;
-    size_t       sz;
-    size_t    capacity;
+    #ifdef DEBUG
+        const char* name;
+        const char* file;
+        const int   line;
+    #endif
+
     int       err_code;
+    stk_el_t* data;
+    size_t    sz;
+    size_t    capacity;
 };
 
 enum Error_codes
@@ -22,11 +31,18 @@ enum Error_codes
     SIZE_ERR = 2
 };
 
-enum Process_codes
-{
-    CTOR_PROC = 0,
-    PUSH_PROC = 1,
-    POP_PROC  = 2
-};
+#ifdef DEBUG
+    #define INIT(var) #var, __FILE__, __LINE__
+    #define ON_DEBUG(...) __VA_ARGS__
+    #define STACK_ASSERT(var)                                  \
+        if (StackError(var) != NO_ERR) {                       \
+            StackDump(var, __FILE__, __LINE__, __func__);      \
+            assert(0);                                         \
+        }
+#else
+    #define INIT(var)
+    #define ON_DEBUG(...)
+    #define STACK_ASSERT(var)
+#endif
 
 #endif

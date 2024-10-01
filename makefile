@@ -5,11 +5,20 @@ fg = -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal -
 stk: a.exe
 	a.exe
 
-a.exe: main.o
-	g++ main.o
+a.exe: main.o CDtor.o PushPop.o DumpErr.o
+	g++ main.o CDtor.o PushPop.o DumpErr.o
 
 main.o: main.cpp
 	g++ -c $(fg) main.cpp
+
+CDtor.o: CDtor.cpp
+	g++ -c $(fg) CDtor.cpp
+
+PushPop.o: PushPop.cpp
+	g++ -c $(fg) PushPop.cpp
+
+DumpErr.o: DumpErr.cpp
+	g++ -c $(fg) DumpErr.cpp
 
 clean:
 	rm -rf *.o *.exe

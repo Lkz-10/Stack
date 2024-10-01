@@ -6,24 +6,28 @@
 
 int main()
 {
-    Stk_t stk = {};
+    Stk_t stk = {INIT(stk)};
 
     StackCtor(&stk);
 
-    if(StackError(&stk, CTOR_PROC) == NO_ERR) StackDump(&stk);
+    STACK_ASSERT(&stk)
 
-    if(StackError(&stk, CTOR_PROC) == NO_ERR) StackPush(&stk, 1925);
-    if(StackError(&stk, CTOR_PROC) == NO_ERR) StackPush(&stk, 2048);
+    StackPush(&stk, 1925);
 
-    if(StackError(&stk, PUSH_PROC) == NO_ERR) StackDump(&stk);
+    STACK_ASSERT(&stk)
+
+    StackPush(&stk, 2048);
+
+    STACK_ASSERT(&stk)
 
     stk_el_t popped_el = 0;
-    if(StackError(&stk, PUSH_PROC) == NO_ERR) StackPop(&stk, &popped_el);
+    StackPop(&stk, &popped_el);
 
-    if(StackError(&stk, POP_PROC) == NO_ERR) {
-        StackDump(&stk);
-        printf("Popped element: %d\n\n", popped_el);
-    }
+    STACK_ASSERT(&stk)
+
+    //printf("Popped element: %d\n\n", popped_el);
+
+    StackDump(&stk, __FILE__, __LINE__, __func__);
 
     StackDtor(&stk);
 
