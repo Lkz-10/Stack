@@ -8,6 +8,8 @@ void StackCtor(Stk_t* stk)
     stk->capacity = CAPACITY_MIN;
     stk->err_code = NO_ERR;
 
+    ON_DEBUG(stk->canary2 = CANARY;)
+
     FillPoison(stk);
 }
 

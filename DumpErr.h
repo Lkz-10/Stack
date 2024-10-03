@@ -7,6 +7,7 @@
 
 #include "Globals.h"
 #include "OutputColours.h"
+#include "CDtor.h"
 
 void StackDump(Stk_t* stk, const char* file_name, const int line, const char* func_name);
 int  StackError(Stk_t* stk);

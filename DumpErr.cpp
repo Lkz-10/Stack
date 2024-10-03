@@ -6,6 +6,7 @@ int StackError(Stk_t* stk)
     if (stk->err_code == NO_ERR) {
         if (stk->data == NULL) stk->err_code = DATA_ERR;
         else if (stk->sz > stk->capacity) stk->err_code = SIZE_ERR;
+        else if (stk->canary1 != CANARY || stk->canary2 != CANARY) stk->err_code = CANARY_ERR;
     }
     //if (stk->err_code != NO_ERR) PrintError(stk->err_code);
 
@@ -20,7 +21,8 @@ void StackDump(Stk_t* stk, const char* file_name, const int line, const char* fu
     printf(" born at %s:%d, named \"%s\"\n", stk->file, stk->line, stk->name);
     printf("called from %s:%d (%s)\n", file_name, line, func_name);
 
-    printf("{\n  capacity = %lld\n  size     = %lld\n  data [0x%p]", stk->capacity, stk->sz, stk->data);
+    printf("{\n  canary1 = %x\n  ", stk->canary1);
+    printf("capacity = %lld\n  size     = %lld\n  data [0x%p]", stk->capacity, stk->sz, stk->data);
     assert(stk->data);
 
     printf(":\n  {\n");
@@ -32,7 +34,12 @@ void StackDump(Stk_t* stk, const char* file_name, const int line, const char* fu
             printf("    [%lld] = %f (POISON)\n", i, (stk->data)[i]);
         }
     }
-    printf("  }\n}\n");
+    printf("  }\n  ");
+    printf("canary2 = %x\n}\n", stk->canary2);
+
+    if (stk->err_code != NO_ERR) PrintError(stk->err_code);
+
+    StackDtor(stk);
 }
 
 void PrintError(int error_code)
@@ -40,33 +47,18 @@ void PrintError(int error_code)
     switch (error_code)
     {
         case DATA_ERR:
-            fprintf(stderr, "Error: address of data is NULL\n");
+            fprintf(stderr, RED "Error: address of data is NULL\n" COLOUR_RESET);
             break;
 
         case SIZE_ERR:
-            fprintf(stderr, "Error: size > capacity\n");
+            fprintf(stderr, RED "Error: size > capacity\n" COLOUR_RESET);
+            break;
+
+        case CANARY_ERR:
+            fprintf(stderr, RED "Canary error\n" COLOUR_RESET);
             break;
 
         default:
             fprintf(stderr, RED "Unknown error\n" COLOUR_RESET);
     }
-
-    /*printf("Process: ");
-
-    switch (process)
-    {
-        case CTOR_PROC:
-            fprintf(stderr, "Ctor\n\n");
-            break;
-        case PUSH_PROC:
-            fprintf(stderr, "Push\n\n");
-            break;
-
-        case POP_PROC:
-            fprintf(stderr, "Pop\n\n");
-            break;
-
-        default:
-            fprintf(stderr, RED "Unknown process\n\n" COLOUR_RESET);
-    }*/
 }

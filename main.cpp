@@ -20,6 +20,8 @@ int main()
 
     STACK_ASSERT(&stk)
 
+    //stk.canary1 = 0x52;
+
     stk_el_t popped_el = 0;
     StackPop(&stk, &popped_el);
 
