@@ -10,22 +10,26 @@ int main()
 
     StackCtor(&stk);
 
-    STACK_ASSERT(&stk)
-
     StackPush(&stk, 1925);
-
-    STACK_ASSERT(&stk)
-
     StackPush(&stk, 2048);
+    StackPush(&stk, 2056);
+    StackPush(&stk, 2451);
 
-    STACK_ASSERT(&stk)
-
-    //stk.canary1 = 0x52;
+    StackPush(&stk, 20.5);
+    StackPush(&stk, 0.009);
 
     stk_el_t popped_el = 0;
+
+    StackPop(&stk, &popped_el);
+    StackPop(&stk, &popped_el);
+    StackPop(&stk, &popped_el);
     StackPop(&stk, &popped_el);
 
-    STACK_ASSERT(&stk)
+    StackPush(&stk, 2512);
+
+    StackPop(&stk, &popped_el);
+    StackPop(&stk, &popped_el);
+    StackPop(&stk, &popped_el);
 
     //printf("Popped element: %d\n\n", popped_el);
 
